@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cuestionario Data Warehouse</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f7f7f7; }
+    .question { background: white; padding: 15px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .correct { color: green; font-weight: bold; }
+    .incorrect { color: red; font-weight: bold; }
+    .option { cursor: pointer; padding: 5px; display: block; }
+    .option:hover { background: #eee; }
+  </style>
+</head>
+<body>
+  <h1>Cuestionario de Data Warehouse</h1>
+  <div id="quiz"></div>
+  <script>
+   const questions = [
+  {
+    q: "El Data Warehouse es un repositorio que se diferencia de los sistemas operacionales por su enfoque. ¿Cuál de las siguientes características NO corresponde al enfoque propuesto por Inmon?",
+    options: ["Integrado", "Detallado", "Volátil", "Variable en el tiempo"],
+    answer: 2
+  },
+  {
+    q: "El enfoque de Ralph Kimball sugiere comenzar el diseño de un DW mediante:",
+    options: ["Un repositorio corporativo único", "El uso de esquemas relacionales", "La creación de Data Marts por áreas", "El uso exclusivo de bases OLTP"],
+    answer: 2
+  },
+  {
+    q: "El proceso ETL es fundamental en la arquitectura del Data Warehouse. ¿Qué etapa del proceso transforma los datos para estandarizarlos y limpiarlos?",
+    options: ["Extracción", "Transformación", "Carga", "Validación"],
+    answer: 1
+  },
+  {
+    q: "Cuando hablamos de granularidad en un DW, nos referimos al:",
+    options: ["Formato de los datos", "Tamaño físico de almacenamiento", "Nivel de detalle de los datos", "Número de tablas"],
+    answer: 2
+  },
+  {
+    q: "Un dato atómico es fundamental en el análisis detallado porque representa:",
+    options: ["Un dato duplicado", "Un dato sin procesar", "Un dato agregado por mes", "Un dato en su forma más descompuesta"],
+    answer: 3
+  },
+  {
+    q: "¿Qué afirmación sobre un Data Mart es correcta?",
+    options: ["Es un área temporal para staging", "Es un subconjunto especializado del DW", "Es un sistema OLTP", "Solo almacena datos crudos"],
+    answer: 1
+  },
+  {
+    q: "¿Cuál de los siguientes conceptos representa una base de datos utilizada específicamente para análisis multidimensional?",
+    options: ["OLTP", "Data Mart", "MDDB", "ODS"],
+    answer: 2
+  },
+  {
+    q: "¿Qué componente se utiliza como almacenamiento intermedio para datos operacionales antes de cargarlos al DW?",
+    options: ["ODS", "BI", "KDD", "DSS"],
+    answer: 0
+  },
+  {
+    q: "¿Qué ventaja representa la granularidad fina en un DW?",
+    options: ["Consultas más rápidas", "Menor ocupación de espacio", "Mayor detalle en el análisis", "Requiere menos limpieza de datos"],
+    answer: 2
+  },
+  {
+    q: "¿Cuál de las siguientes opciones corresponde a un dato crudo?",
+    options: ["Promedio de ventas mensuales", "Total de clientes nuevos por región", "Registro de clics por usuario", "Ventas anuales agrupadas"],
+    answer: 2
+  },
+
+  // Preguntas con contexto académico
+  {
+    q: "Uno de los objetivos de un Data Warehouse es permitir análisis de datos históricos para entender comportamientos pasados. Este tipo de análisis se clasifica como:",
+    options: ["Análisis predictivo", "Análisis descriptivo", "Análisis prescriptivo", "Análisis semántico"],
+    answer: 1
+  },
+  {
+    q: "Según el modelo CIF propuesto por Inmon, ¿cuál es el flujo de construcción recomendado?",
+    options: ["Desde reportes a bases operativas", "De Data Marts a DW", "De datos brutos a reportes", "Desde el DW central hacia los Data Marts"],
+    answer: 3
+  },
+  {
+    q: "En el contexto de almacenamiento moderno, un Data Lake permite guardar:",
+    options: ["Solo datos estructurados", "Datos normalizados", "Todo tipo de datos en su forma original", "Datos exclusivamente relacionales"],
+    answer: 2
+  },
+  {
+    q: "El índice Columnstore en SQL Server se utiliza principalmente para:",
+    options: ["Agrupar tablas", "Optimizar lectura de columnas", "Reducir redundancia", "Controlar concurrencia"],
+    answer: 1
+  },
+  {
+    q: "¿Qué herramienta de Microsoft permite análisis OLAP interactivo para usuarios finales?",
+    options: ["PolyBase", "Excel con tablas dinámicas", "Azure Blob Storage", "PowerShell"],
+    answer: 1
+  },
+  {
+    q: "En un sistema OLTP, la prioridad está en:",
+    options: ["Consultas históricas complejas", "Procesos ETL", "Transacciones rápidas y precisas", "Carga de datos crudos"],
+    answer: 2
+  },
+  {
+    q: "¿Cuál es la principal función de un sistema DSS?",
+    options: ["Controlar accesos", "Soportar decisiones empresariales", "Almacenar logs del sistema", "Optimizar velocidad de lectura"],
+    answer: 1
+  },
+  {
+    q: "Dentro del ciclo KDD, ¿en qué fase se produce el hallazgo de conocimiento útil?",
+    options: ["Selección", "Minería de datos", "Visualización", "Carga"],
+    answer: 1
+  },
+  {
+    q: "En el modelo estrella del DW, ¿cuál de las siguientes es una tabla de dimensiones?",
+    options: ["Ventas", "Producto", "Monto total", "Suma mensual"],
+    answer: 1
+  },
+  {
+    q: "¿Cuál es una ventaja clara del modelo estrella frente al copo de nieve?",
+    options: ["Mejor normalización", "Menor duplicación de datos", "Consultas más simples", "Mayor granularidad"],
+    answer: 2
+  },
+
+  // Basadas en tabla ficticia
+  {
+    q: "Dada una tabla de turnos con las columnas: DNI, Fecha Inicio, Hora Inicio, Turno, Tienda, ¿cuál sería la clave más adecuada para identificar cada registro en un sistema OLTP?",
+    options: ["Turno", "Fecha Inicio", "DNI + Fecha Inicio + Turno", "Hora Inicio"],
+    answer: 2
+  },
+  {
+    q: "Un empleado solo puede realizar un turno al día. ¿Qué validación deberías aplicar en la capa de staging para asegurar esta regla?",
+    options: ["Validar claves duplicadas", "Revisar tipo de turno", "Control de fechas y DNI únicos por día", "Ordenar por hora de inicio"],
+    answer: 2
+  },
+  {
+    q: "Se desea conocer el total de ventas por producto, mes y tienda. ¿Qué tipo de granularidad necesitas en el DW?",
+    options: ["Muy baja", "Fina", "Agregada", "No estructurada"],
+    answer: 1
+  },
+  {
+    q: "En una arquitectura de DW, los datos crudos que llegan desde múltiples fuentes deben ser:",
+    options: ["Almacenados sin cambios", "Ignorados", "Limpiados y transformados", "Visualizados directamente"],
+    answer: 2
+  },
+  {
+    q: "¿Qué representa un dato en nivel 'Trusted' dentro de la madurez del dato?",
+    options: ["Sin reglas aplicadas", "Dato listo para análisis", "Dato rechazado por validación", "Dato duplicado"],
+    answer: 1
+  },
+
+  // Más preguntas contextuales y metodologías
+  {
+    q: "El enfoque HEFESTO se utiliza principalmente en:",
+    options: ["Corporaciones", "Entornos académicos", "Sistemas bancarios", "Minería de datos compleja"],
+    answer: 1
+  },
+  {
+    q: "¿Qué diferencia al enfoque DWEP respecto a otros modelos?",
+    options: ["Basado en agilidad extrema", "Formal y estructurado como ingeniería de software", "Orienta a la velocidad de entrega", "Evita la limpieza de datos"],
+    answer: 1
+  },
+  {
+    q: "¿Cuál de los siguientes niveles de madurez del dato implica que aún no ha sido transformado ni validado?",
+    options: ["Common", "Trusted", "Raw", "Semiestructurado"],
+    answer: 2
+  },
+  {
+    q: "¿Qué define a un sistema OLAP respecto al OLTP?",
+    options: ["Alta frecuencia de escritura", "Consultas complejas y multidimensionales", "Datos en tiempo real", "Optimización de inserciones"],
+    answer: 1
+  },
+  {
+    q: "En Power BI, un modelo importado desde un DW permite:",
+    options: ["Modificar datos en el DW", "Crear modelos de predicción automática", "Explorar datos multidimensionales", "Actualizar transacciones del sistema fuente"],
+    answer: 2
+  },
+
+  // Data Lake, BI y Azure
+  {
+    q: "Un archivo de video capturado por una cámara de seguridad se clasifica como:",
+    options: ["Dato estructurado", "Dato no estructurado", "Dato semiestructurado", "Dato común"],
+    answer: 1
+  },
+  {
+    q: "El servicio de Azure que permite almacenar y procesar datos estructurados y no estructurados en un único repositorio es:",
+    options: ["SQL Database", "Blob Storage", "Data Lake", "HDInsight"],
+    answer: 2
+  },
+  {
+    q: "¿Qué componente permite suspender y reanudar la capacidad de cómputo en Azure SQL DW?",
+    options: ["Power BI", "PolyBase", "U-SQL", "Escalado dinámico"],
+    answer: 3
+  },
+  {
+    q: "En un modelo copo de nieve, las tablas de dimensión se encuentran:",
+    options: ["Sin normalizar", "En una sola tabla", "Parcialmente normalizadas", "Distribuidas por servidor"],
+    answer: 2
+  },
+  {
+    q: "¿Qué permite el uso de BI en una organización?",
+    options: ["Actualizar sistemas operativos", "Controlar accesos físicos", "Tomar decisiones basadas en datos", "Programar scripts de limpieza"],
+    answer: 2
+  },
+
+  // Completamos hasta 50
+  {
+    q: "En un entorno de análisis de datos, ¿qué rol cumple U-SQL?",
+    options: ["Herramienta visual", "Lenguaje para procesar datos en Azure Data Lake", "Sistema de respaldo", "Motor de OLTP"],
+    answer: 1
+  },
+  {
+    q: "¿Cuál de las siguientes opciones representa un tipo de análisis realizado con OLAP?",
+    options: ["Cálculo de impuestos", "Actualización de nóminas", "Comparación de ventas trimestrales por región", "Procesamiento de pagos"],
+    answer: 2
+  },
+  {
+    q: "El modelo Top-Down se caracteriza por:",
+    options: ["Ser más rápido que otros", "Enfocarse primero en la visualización", "Construir primero un DW corporativo", "Tener menor trazabilidad"],
+    answer: 2
+  },
+  {
+    q: "¿Qué herramienta permite conectar un DW con archivos Hadoop?",
+    options: ["Power BI", "PolyBase", "Excel", "MySQL"],
+    answer: 1
+  },
+  {
+    q: "En el proceso ETL, ¿qué paso viene inmediatamente después de la transformación?",
+    options: ["Carga", "Visualización", "Limpieza", "Agrupación"],
+    answer: 0
+  }
+];
+
+
+    const shuffled = questions.sort(() => 0.5 - Math.random()).slice(0, 10);
+    const quizDiv = document.getElementById("quiz");
+
+    shuffled.forEach((item, i) => {
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+      const qText = document.createElement("p");
+      qText.textContent = `${i + 1}. ${item.q}`;
+      qDiv.appendChild(qText);
+      item.options.forEach((opt, idx) => {
+        const btn = document.createElement("button");
+        btn.textContent = opt;
+        btn.className = "option";
+        btn.onclick = () => {
+          if (btn.dataset.clicked) return;
+          btn.dataset.clicked = true;
+          if (idx === item.answer) {
+            btn.classList.add("correct");
+            btn.textContent += " ✓ Correcto";
+          } else {
+            btn.classList.add("incorrect");
+            btn.textContent += " ✗ Incorrecto";
+          }
+        };
+        qDiv.appendChild(btn);
+      });
+      quizDiv.appendChild(qDiv);
+    });
+  </script>
+</body>
+</html>
